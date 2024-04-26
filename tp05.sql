@@ -49,5 +49,15 @@ SELECT ID_BON, SUM(QTE) as totalQte FROM COMPO GROUP BY ID_BON HAVING totalQte >
 -- p. Calculate the total cost of the orders passed in April:
 SELECT SUM(ARTICLE.PRIX * COMPO.QTE) FROM ARTICLE LEFT JOIN COMPO ON COMPO.ID_ART = ARTICLE.ID INNER JOIN BON ON BON.ID = COMPO.ID_BON WHERE BON.DATE_CMDE BETWEEN '2019-04-01' AND '2019-04-30';
 
--- 3:
+-- 3: Harder SQL commands:
+-- a. Select the articles who have the same designation but different suppliers:
+SELECT ARTICLE.* FROM ARTICLE JOIN article AS article2 ON article.designation = article2.designation AND article.id_fou != article2.id_fou;
 
+-- b. Calculate the order spendings per month:
+SELECT SUM(ARTICLE.PRIX * COMPO.QTE), DATE_FORMAT(BON.DATE_CMDE, '%Y-%m') AS MonthYear FROM ARTICLE LEFT JOIN COMPO ON COMPO.ID_ART = ARTICLE.ID INNER JOIN BON ON BON.ID = COMPO.ID_BON GROUP BY DATE_FORMAT(BON.DATE_CMDE,'%Y-%m');
+
+-- c. Select the purchase orders without article:
+SELECT * FROM bon LEFT JOIN compo ON compo.id_bon = bon.id WHERE compo.ID_ART IS NULL;
+
+-- d.Calculate the average price of the purchase orders per supplier:
+SELECT NOM, AVG(PRIX) FROM FOURNISSEUR LEFT JOIN ARTICLE ON ARTICLE.ID_FOU = FOURNISSEUR.ID GROUP BY FOURNISSEUR.NOM;
