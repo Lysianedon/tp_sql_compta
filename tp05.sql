@@ -60,11 +60,12 @@ SELECT SUM(ARTICLE.PRIX * COMPO.QTE), DATE_FORMAT(BON.DATE_CMDE, '%Y-%m') AS Mon
 SELECT * FROM bon LEFT JOIN compo ON compo.id_bon = bon.id WHERE compo.ID_ART IS NULL;
 
 -- d.Calculate the average price of the purchase orders per supplier:
-SELECT FOURNISSEUR.NOM, AVG(totalAmountPerSupplier) AS averageAmountPerSupplier FROM FOURNISSEUR 
-LEFT JOIN ( 
-SELECT BON.ID_FOU, SUM(ARTICLE.PRIX * COMPO.QTE) as totalAmountPerSupplier 
-FROM ARTICLE 
-INNER JOIN COMPO ON COMPO.ID_ART = ARTICLE.ID 
-INNER JOIN BON ON BON.ID = COMPO.ID_BON 
-GROUP BY BON.ID_FOU ) as subquery ON FOURNISSEUR.ID = subquery.ID_FOU 
+
+SELECT FOURNISSEUR.NOM, AVG(subquery.totalSumOrdersPerSupplier) AS averageOrderPricePerSupplier FROM FOURNISSEUR
+LEFT JOIN (
+SELECT ARTICLE.ID_FOU, SUM(article.prix * compo.qte) as totalSumOrdersPerSupplier 
+FROM ARTICLE
+LEFT JOIN COMPO ON COMPO.ID_ART = ARTICLE.ID
+LEFT JOIN BON ON bon.id = COMPO.ID_BON
+GROUP BY BON.ID_FOU ) AS subquery ON FOURNISSEUR.id = subquery.ID_FOU
 GROUP BY FOURNISSEUR.NOM;
