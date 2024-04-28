@@ -24,5 +24,17 @@ SET compo.qte = compo.qte * 2
 WHERE fournisseur.nom = "Française d'Imports";
 
 -- 3e. Develop an update query that allows you to remove the elements in parentheses in the designations. You will need to use functions such as substring and position:
+UPDATE ARTICLE
+SET designation = 
+  CASE 
+    WHEN POSITION('(' IN designation) > 0 AND POSITION(')' IN designation) > 0 THEN 
+      CONCAT(
+        SUBSTRING(designation, 1, POSITION('(' IN designation) - 1), 
+        SUBSTRING(designation, POSITION(')' IN designation) + 1)
+      )
+    ELSE 
+      designation
+  END;
+
 
 
